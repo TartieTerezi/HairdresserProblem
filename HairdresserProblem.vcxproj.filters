@@ -18,19 +18,5 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hairdresser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Stool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Hairdresser.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Stool.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

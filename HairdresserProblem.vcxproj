@@ -129,13 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Hairdresser.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Stool.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Hairdresser.h" />
-    <ClInclude Include="Stool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
