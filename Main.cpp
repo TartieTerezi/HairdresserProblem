@@ -1,78 +1,71 @@
 #include <iostream>
 
-#include "vector"
 #include <mutex>
+#include <semaphore>
 
-#define NBR_STOOLS 8
+#define NBR_STOOLS 4
+#define NBR_HAIREDRESSER 1
 
-static std::mutex* stools = new std::mutex[NBR_STOOLS]{};
-static std::mutex hairdresser;
+static std::counting_semaphore stools(NBR_STOOLS);
+static std::counting_semaphore hairedresser(NBR_HAIREDRESSER);
+static int nbrCustomer = 0;
 
-void Cut()
+void Cut(int _idCustomer)
 {
-	std::cout << "Le coiffeur coupe un client" << std::endl;
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	std::cout << "fini, le client s'en va " << std::endl;
-	hairdresser.unlock();
+	std::cout << "The customer "<< _idCustomer << " gets a haircut\n";
+	std::this_thread::sleep_for(std::chrono::milliseconds(600));
+	std::cout << "The customer "<< _idCustomer << " pays and leaves the hairdresser\n";
+	hairedresser.release();
 }
 
-bool CanCut()
+void HairdresserFunc()
 {
-	return hairdresser.try_lock();
+	srand(time(NULL));
+	rand();
+
+	auto lambda = [&]()
+		{
+			int id = nbrCustomer++;
+
+			std::cout << "The customer " << id << " arrives\n";
+			if (hairedresser.try_acquire())
+			{
+				Cut(id);
+				return;
+			}
+
+			if (!stools.try_acquire())
+			{
+				std::cout << "Customer " << id << " leaves because there's no stools :'c\n";
+				return;
+			}
+
+			std::cout << "the customer " << id << " sits on a stool\n";
+			while (true)
+			{
+
+				if (hairedresser.try_acquire())
+				{
+					stools.release();
+					std::cout << "The customer " << id << " leaves the stool\n";
+					Cut(id);
+					
+					return;
+				}
+			}
+
+		};
+
+	while (true)
+	{
+		std::thread thread(lambda);
+		thread.detach();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 300 + 300));
+	}
 }
 
 int main()
 {
-	auto lambda = [&]()
-		{
-			if (CanCut())
-			{
-				Cut();
-				return;
-			}
-
-			int index = -1;
-			for (size_t i = 0; i < NBR_STOOLS; i++)
-			{
-				if (stools[i].try_lock())
-				{
-					std::cout << "Le client s'asseoit" << std::endl;
-					index = i;
-					i = NBR_STOOLS;
-				}
-			}
-
-			if (index != -1)
-			{
-				while (true)
-				{
-					if (CanCut())
-					{
-						stools[index].unlock();
-						Cut();
-						return;
-					}
-				}
-			}
-			else
-			{
-				std::cout << "Le client quitte le coiffeur mécontent :'c" << std::endl;
-			}
-		};
-
-	
-	srand(time(NULL));
-
-
-	while (true)
-	{
-		if (rand() % 2 == 0)
-		{
-			std::cout << "Un client arrive" << std::endl;
-			std::thread thread(lambda);
-			thread.detach();
-		}
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 300 + 200));
-	}
+	HairdresserFunc();
 }

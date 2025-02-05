@@ -1,0 +1,22 @@
+# HairdresserProblem
+
+This is a project to practice semaphora 
+
+# Hairdresser problem 
+
+A hairdresser owns a very small salon\
+there is only one chair in the work area\
+and 4 stools in the waiting room\
+the salon runs like this:
+- when the hairdresser finishes a customer's haircut, the customer leaves
+- the hairdresser then goes into the waiting room
+if there are customers in the waiting room :
+- the hairdresser then goes to the waiting room
+if there are customers in the waiting room:
+- he takes one of them, sits him/her on the chair in the work area and starts cutting
+if there are no customers in the waiting room:
+-  he returns to the workspace, and rests on his chair
+when a customer arrives, he goes to see the hairdresser\
+if the customer is asleep, he wakes him up and sits in the chair for an immediate cut\
+if they're working, they sit in the waiting room\
+if the waiting room is full, the customer leaves.
